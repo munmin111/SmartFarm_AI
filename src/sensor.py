@@ -2,50 +2,24 @@ import time
 import board
 import adafruit_dht
 
-# 물리 핀 7 = GPIO 4
-dht = adafruit_dht.DHT11(board.D4)
+dht = adafruit_dht.DHT11(
+    board.D4,
+    use_pulseio=False
+)
 
+print("DHT11 테스트 시작")
+print("Ctrl + C 로 종료")
 
-def read_sensor():
+while True:
     try:
         temperature = dht.temperature
         humidity = dht.humidity
 
-        return temperature, humidity
+        print(f"온도: {temperature} °C")
+        print(f"습도: {humidity} %")
+        print("----------------")
 
     except RuntimeError as e:
-        print("DHT11 읽기 오류:", e)
-        return None, None
+        print("읽기 실패:", e)
 
-
-def main():
-
-    print("================================")
-    print(" Smart Farm DHT11 Sensor")
-    print("================================")
-    print("센서 측정을 시작합니다.")
-    print("Ctrl + C : 종료")
-    print()
-
-    try:
-        while True:
-
-            temperature, humidity = read_sensor()
-
-            if temperature is not None and humidity is not None:
-                print(
-                    f"온도: {temperature:.1f} °C | "
-                    f"습도: {humidity:.1f} %"
-                )
-
-            time.sleep(2)
-
-    except KeyboardInterrupt:
-        print("\n센서 테스트 종료")
-
-    finally:
-        dht.exit()
-
-
-if __name__ == "__main__":
-    main()
+    time.sleep(2)
